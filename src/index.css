@@ -1,0 +1,187 @@
+@import "tailwindcss";
+
+/* ================================================================== */
+/*  StadiumGenie — Global Design Tokens                               */
+/* ================================================================== */
+:root {
+  --sg-bg: #06060f;
+  --sg-surface: rgba(255, 255, 255, 0.04);
+  --sg-surface-hover: rgba(255, 255, 255, 0.08);
+  --sg-border: rgba(255, 255, 255, 0.07);
+  --sg-green: #00A550;
+  --sg-green-bright: #00c962;
+  --sg-gold: #FFD700;
+  --sg-orange: #f6993f;
+  --sg-yellow: #ecc94b;
+  --sg-red: #e53e3e;
+  --sg-text-primary: #f0f0f5;
+  --sg-text-secondary: rgba(255, 255, 255, 0.55);
+  --sg-text-muted: rgba(255, 255, 255, 0.35);
+  --sg-font-heading: 'Outfit', sans-serif;
+  --sg-font-body: 'Inter', sans-serif;
+  --sg-radius: 14px;
+  --sg-radius-sm: 10px;
+  --sg-transition: 0.2s ease;
+}
+
+/* ================================================================== */
+/*  Base Styles                                                        */
+/* ================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--sg-font-body);
+  background: var(--sg-bg);
+  color: var(--sg-text-primary);
+  min-height: 100vh;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* ================================================================== */
+/*  Accessibility                                                      */
+/* ================================================================== */
+
+/* Skip-to-content link — visible only on focus */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 9999;
+  padding: 12px 24px;
+  background: var(--sg-green);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: var(--sg-radius-sm);
+  text-decoration: none;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+/* Focus-visible ring for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--sg-green);
+  outline-offset: 2px;
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High-contrast mode */
+.high-contrast {
+  --sg-text-primary: #ffffff;
+  --sg-text-secondary: rgba(255, 255, 255, 0.8);
+  --sg-text-muted: rgba(255, 255, 255, 0.6);
+  --sg-border: rgba(255, 255, 255, 0.2);
+  --sg-surface: rgba(255, 255, 255, 0.08);
+}
+
+/* Large text mode */
+.large-text {
+  font-size: 20px;
+}
+
+/* ================================================================== */
+/*  Scrollbar                                                          */
+/* ================================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ================================================================== */
+/*  Global Animations                                                  */
+/* ================================================================== */
+@keyframes sg-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sg-slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sg-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+@keyframes sg-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sg-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes sg-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+
+@keyframes sg-gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ================================================================== */
+/*  Utility Classes                                                    */
+/* ================================================================== */
+.sg-glass {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--sg-border);
+}
+
+.sg-gradient-text {
+  background: linear-gradient(135deg, var(--sg-green), var(--sg-green-bright));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.sg-animate-in {
+  animation: sg-fade-in 0.4s ease both;
+}
