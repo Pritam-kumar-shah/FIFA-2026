@@ -4,6 +4,8 @@ import { render, screen, fireEvent, act } from '@testing-library/react';
 import ErrorBoundary from '../components/shared/ErrorBoundary';
 import { STATUS, COLOR } from '../utils/constants';
 
+vi.stubEnv('VITE_GEMINI_API_KEY', 'test-key-123');
+
 // A simple crashing component for testing ErrorBoundary
 const CrashComponent = ({ shouldCrash }) => {
   if (shouldCrash) {
@@ -68,5 +70,18 @@ describe('Constants Module', () => {
     expect(COLOR.OK).toBe('#00A550');
     expect(COLOR.WARNING).toBe('#f97316');
     expect(COLOR.CRITICAL).toBe('#e53e3e');
+  });
+});
+
+import FanApp from '../components/fan/FanApp';
+import OpsApp from '../components/ops/OpsApp';
+
+describe('FanApp and OpsApp Rendering', () => {
+  it('should render FanApp without throwing', () => {
+    render(<ErrorBoundary><FanApp onBack={() => {}} /></ErrorBoundary>);
+  });
+
+  it('should render OpsApp without throwing', () => {
+    render(<ErrorBoundary><OpsApp onBack={() => {}} /></ErrorBoundary>);
   });
 });
