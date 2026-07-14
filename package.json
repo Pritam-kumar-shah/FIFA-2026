@@ -1,7 +1,7 @@
 {
   "name": "stadium-genie",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "StadiumGenie - GenAI Smart Stadium & Tournament Operations Assistant for FIFA World Cup 2026",
   "type": "module",
   "scripts": {
