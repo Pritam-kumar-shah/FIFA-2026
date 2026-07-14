@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import {
   MessageCircle, Users, Train, Accessibility,
   ArrowLeft, Trophy, Sparkles, Radio
 } from 'lucide-react';
-import { INITIAL_GATES, simulateStep } from '../../services/crowdSimulator';
+import useGateData from '../../hooks/useGateData';
 import AIChatbot from './AIChatbot';
 import CrowdAlerts from './CrowdAlerts';
 import TransportAdvisor from './TransportAdvisor';
@@ -92,16 +93,7 @@ export default function FanApp({ onBack }) {
   useKeyframes();
 
   const [activeTab, setActiveTab] = useState('chat');
-  const [gates, setGates] = useState(INITIAL_GATES);
-  const intervalRef = useRef(null);
-
-  /* — Gate simulation interval — */
-  useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setGates(prev => simulateStep(prev));
-    }, GATE_SIM_INTERVAL);
-    return () => clearInterval(intervalRef.current);
-  }, []);
+  const { gates } = useGateData(GATE_SIM_INTERVAL);
 
   /* — Accessibility mode toggle — */
   const handleA11yToggle = useCallback(() => {
@@ -486,3 +478,7 @@ export default function FanApp({ onBack }) {
     </div>
   );
 }
+
+FanApp.propTypes = {
+  onBack: PropTypes.func.isRequired,
+};

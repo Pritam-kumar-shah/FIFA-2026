@@ -51,8 +51,10 @@ const SAMPLE_INCIDENTS = [
 /* ------------------------------------------------------------------ */
 /*  Tests                                                              */
 /* ------------------------------------------------------------------ */
-beforeEach(() => {
+beforeEach(async () => {
   mockGenerateContent.mockReset();
+  const { apiCache } = await import('../services/cache');
+  apiCache.clear();
 });
 
 describe('gemini service', () => {
@@ -185,5 +187,58 @@ describe('gemini service', () => {
       expect(result[0]).toHaveProperty('action');
       expect(result[0]).toHaveProperty('assignTo');
     });
+  });
+
+  describe('Input Sanitization & Caching', () => {
+    it('sanitizeInput should strip HTML tags and prevent XSS payloads', async () => {
+      const { sanitizeInput } = await import('../services/gemini');
+      const dirty = '<script>alert("hack")</script>Hello <b>World</b>';
+      const clean = sanitizeInput(dirty);
+      expect(clean).toBe('Hello World');
+    });
+
+    it('sanitizeInput should enforce max character length and reject empty/non-string inputs', async () => {
+      const { sanitizeInput } = await import('../services/gemini');
+      expect(() => sanitizeInput(123)).toThrow();
+      expect(() => sanitizeInput('')).toThrow();
+    });
+
+    it('apiCache should cache and retrieve items before expiry', async () => {
+      const { apiCache } = await import('../services/cache');
+      apiCache.clear();
+      apiCache.set('test-key', 'cached-value', 5000);
+      expect(apiCache.get('test-key')).toBe('cached-value');
+
+      // Manual expiry test
+      apiCache.set('temp-key', 'expired-value', -100);
+      expect(apiCache.get('temp-key')).toBeNull();
+    });
+
+    it('askGenie should reuse cached response for duplicate requests', async () => {
+      const { apiCache } = await import('../services/cache');
+      apiCache.clear();
+      mockGenerateContent.mockResolvedValue(mockResponse('Fresh Answer'));
+
+      const r1 = await askGenie('cached query', SAMPLE_GATES);
+      expect(r1).toBe('Fresh Answer');
+      expect(mockGenerateContent).toHaveBeenCalledTimes(1);
+
+      // Duplicate request should retrieve from cache
+      const r2 = await askGenie('cached query', SAMPLE_GATES);
+      expect(r2).toBe('Fresh Answer');
+      expect(mockGenerateContent).toHaveBeenCalledTimes(1); // Still 1
+    });
+
+    it('should gracefully handle API request timeout', async () => {
+      // Simulate a long delay that triggers timeout
+      mockGenerateContent.mockImplementation(() => {
+        return new Promise(resolve => setTimeout(() => resolve(mockResponse('Delayed')), 20000));
+      });
+
+      // Override env variables or mock the call function timeout for test environment
+      // askGenie will catch the timeout error and return fallback text
+      const result = await askGenie('slow query', SAMPLE_GATES);
+      expect(result).toContain('trouble connecting');
+    }, 15000); // Set test timeout high enough to allow the timeout race to complete
   });
 });

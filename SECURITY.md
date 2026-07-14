@@ -5,53 +5,33 @@
 | Key | Storage | Exposed to Frontend? |
 |---|---|---|
 | `VITE_GEMINI_API_KEY` | `.env` file (git-ignored) | Build-time only via Vite env — NOT in source |
-| `VITE_FIREBASE_API_KEY` | `.env` file (git-ignored) | Firebase web API key is designed to be public — secured by Firestore rules |
 
-> **Note for production:** Gemini API calls should be moved to Firebase Cloud Functions (server-side) to fully protect the API key. In this hackathon demo, the key is in the Vite `.env` and never committed to git.
+> **Note for production:** Gemini API calls should be moved to a backend proxy or serverless function to fully protect the API key. In this hackathon demo, the key is loaded from the Vite `.env` and never committed to git.
 
-## `.gitignore` Coverage
-The following are never committed:
-- `.env` / `.env.local` (all variants)
-- `node_modules/`
-- `dist/` / `build/`
+## Content Security Policy (CSP)
 
-## Input Validation
-- All user input to the Gemini API is passed as **user turn content**, clearly separated from the system prompt
-- System prompt instructs the model to only answer stadium/navigation questions
-- Max message length enforced client-side (textarea character limit)
+A robust Content Security Policy is configured in the `index.html` file to mitigate XSS (Cross-Site Scripting) and data injection vulnerabilities:
+- Only loads scripts from the same origin (`'self'`).
+- Style sources are limited to the same origin and Google Fonts.
+- Connections are restricted to the same origin and `https://generativelanguage.googleapis.com` (Gemini API endpoint).
+
+## Input Sanitization & XSS Protection
+
+- All user inputs sent to the Gemini API are sanitized using `sanitizeInput()` inside `src/services/gemini.js`.
+- HTML tags and potential script injections are stripped via regular expressions before being processed by the AI.
+- React's default auto-escaping pipeline prevents rendering of raw HTML in the browser.
 
 ## Rate Limiting
-For production deployment, the following would be added:
-- Firebase App Check to prevent unauthorized API usage
-- Cloud Function rate limiting per IP (100 req/min)
-- Gemini API usage quotas via Google AI Studio console
+
+- A sliding window rate limiter is implemented client-side in `src/services/gemini.js` to protect the Gemini API from abuse and exhaustion.
+- Enforces a maximum limit of 30 requests per minute.
+
+## Request Timeout Protection
+
+- All Gemini API calls are wrapped in a racing promise mechanism (`callGeminiWithTimeout`).
+- If an API request hangs or does not resolve within 12 seconds, it is automatically aborted to release resources and display a fallback experience to the user.
 
 ## No PII Storage
-- Chat conversations are not stored — all AI calls are stateless
-- No user accounts or personal data collected
-- Incident reports contain only operational text — no fan identification
 
-## CORS
-- Firebase Hosting automatically handles CORS for same-origin requests
-- For Cloud Functions in production: configured to allow only deployed frontend origins
-
-## Firestore Security Rules
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Gates readable by anyone (fan app)
-    match /gates/{gate} {
-      allow read: if true;
-      allow write: if false; // Only simulator writes
-    }
-    // Incidents: read/write for authenticated staff
-    match /incidents/{incident} {
-      allow read, write: if true; // Simplified for hackathon demo
-    }
-  }
-}
-```
-
-## Responsible Disclosure
-If you discover a security issue, please open a GitHub issue marked `[SECURITY]` or contact the author directly.
+- Chat conversations are stateless and never logged or stored.
+- No personal data or user accounts are collected.

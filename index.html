@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://generativelanguage.googleapis.com;" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
     <meta name="description" content="StadiumGenie — AI-powered smart stadium assistant for FIFA World Cup 2026. Navigate stadiums, get live crowd alerts, and travel sustainably." />
     <meta name="keywords" content="FIFA, World Cup 2026, AI, Stadium, GenAI, Smart Stadium, Crowd Management, Accessibility" />
     <meta name="author" content="Pritam Kumar" />
@@ -13,6 +15,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <noscript>
+      <div style="padding: 24px; text-align: center; font-family: sans-serif; background: #06060f; color: #fff; height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <h2>JavaScript Required</h2>
+        <p>Please enable JavaScript to run StadiumGenie.</p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

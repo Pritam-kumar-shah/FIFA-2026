@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
+import ErrorBoundary from './components/shared/ErrorBoundary';
 
 /* ── Lazy-load route components for code splitting ── */
 const LandingPage = lazy(() => import('./components/shared/LandingPage'));
@@ -76,7 +77,7 @@ export default function App() {
   const goHome = useCallback(() => navigate('/'), [navigate]);
 
   return (
-    <>
+    <ErrorBoundary>
       {/* ── Skip-to-content link (accessibility) ── */}
       <a href="#main-content" className="skip-link">
         Skip to main content
@@ -94,6 +95,6 @@ export default function App() {
           {route === 'ops' && <OpsApp onBack={goHome} />}
         </Suspense>
       </main>
-    </>
+    </ErrorBoundary>
   );
 }

@@ -78,4 +78,14 @@ describe('App', () => {
       expect(btn.tagName).toBe('BUTTON');
     });
   });
+
+  it('should render the skip-link with correct href for keyboard navigation', async () => {
+    window.location.hash = '/';
+    await act(async () => {
+      render(<App />);
+    });
+    const skipLink = screen.getByText('Skip to main content');
+    expect(skipLink).toBeInTheDocument();
+    expect(skipLink.getAttribute('href')).toBe('#main-content');
+  });
 });

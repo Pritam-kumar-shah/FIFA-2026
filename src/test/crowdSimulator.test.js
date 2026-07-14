@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { INITIAL_GATES, simulateStep } from '../services/crowdSimulator';
+import { INITIAL_GATES, simulateStep, getGateData, getStadiumStats } from '../services/crowdSimulator';
 
 describe('crowdSimulator', () => {
   describe('INITIAL_GATES', () => {
@@ -97,6 +97,37 @@ describe('crowdSimulator', () => {
           expect(gate.color).toBe(colorMap[gate.status]);
         });
       }
+    });
+  });
+
+  describe('getGateData and getStadiumStats', () => {
+    it('getGateData should return 8 gates with simulated delta values', () => {
+      const data = getGateData();
+      expect(data).toHaveLength(8);
+      data.forEach(g => {
+        expect(g.occupancy).toBeGreaterThanOrEqual(10);
+        expect(g.occupancy).toBeLessThanOrEqual(98);
+      });
+    });
+
+    it('getStadiumStats should compute proper aggregates', () => {
+      const data = getGateData();
+      const stats = getStadiumStats(data);
+      expect(stats.stadiumName).toBe('Estadio Azteca');
+      expect(stats.city).toBe('Mexico City');
+      expect(stats.capacity).toBe(87523);
+      expect(stats.totalGates).toBe(8);
+      expect(stats.avgOccupancy).toBeGreaterThanOrEqual(10);
+      expect(stats.avgOccupancy).toBeLessThanOrEqual(98);
+      expect(stats.totalFans).toBeGreaterThanOrEqual(0);
+      expect(stats.criticalGates).toBeGreaterThanOrEqual(0);
+    });
+
+    it('getStadiumStats should handle empty gate data safely', () => {
+      const stats = getStadiumStats([]);
+      expect(stats.totalGates).toBe(0);
+      expect(stats.avgOccupancy).toBe(0);
+      expect(stats.totalFans).toBe(0);
     });
   });
 });

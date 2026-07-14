@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { ArrowLeft, Users, AlertTriangle, Activity, Zap } from 'lucide-react';
 import Sidebar from './Sidebar';
 import StadiumHeatmap from './StadiumHeatmap';
 import IncidentFeed from './IncidentFeed';
 import AIRecommendations from './AIRecommendations';
-import { INITIAL_GATES, simulateStep } from '../../services/crowdSimulator';
+import useGateData from '../../hooks/useGateData';
 
 /* ------------------------------------------------------------------ */
 /*  Design-system constants                                            */
@@ -103,17 +104,9 @@ function StatCard({ id, icon: Icon, label, value, accent }) {
 /*  Main OpsApp component                                              */
 /* ================================================================== */
 export default function OpsApp({ onBack }) {
-  const [gates, setGates] = useState(INITIAL_GATES);
+  const { gates } = useGateData(5000);
   const [incidents, setIncidents] = useState([]);
   const [activePanel, setActivePanel] = useState('overview');
-
-  /* ── Crowd simulation tick every 5 s ── */
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setGates((prev) => simulateStep(prev));
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
 
   /* ── Derived stats for Sidebar ── */
   const stats = useMemo(() => {
@@ -365,3 +358,7 @@ export default function OpsApp({ onBack }) {
     </div>
   );
 }
+
+OpsApp.propTypes = {
+  onBack: PropTypes.func.isRequired,
+};
