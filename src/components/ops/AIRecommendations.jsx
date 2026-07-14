@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { Zap, RefreshCw, Clock, Users, Shield } from 'lucide-react';
 import { generateStaffRecommendations } from '../../services/gemini';
 
@@ -569,3 +570,24 @@ export default function AIRecommendations({ gates = [], incidents = [] }) {
     </section>
   );
 }
+
+AIRecommendations.propTypes = {
+  gates: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      zone: PropTypes.string.isRequired,
+      occupancy: PropTypes.number.isRequired,
+      status: PropTypes.string.isRequired,
+      color: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  incidents: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      summary: PropTypes.string.isRequired,
+      priority: PropTypes.string.isRequired,
+      category: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};

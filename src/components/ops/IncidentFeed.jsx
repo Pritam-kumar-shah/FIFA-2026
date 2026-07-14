@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { Plus, Clock, MapPin, Loader, X, Zap } from 'lucide-react';
 import { analyzeIncident } from '../../services/gemini';
 
@@ -679,7 +680,6 @@ export default function IncidentFeed({ incidents = [], onAddIncident }) {
         )}
       </div>
 
-      {/* ── Modal ── */}
       {modalOpen && (
         <ReportModal
           onClose={() => setModalOpen(false)}
@@ -689,3 +689,17 @@ export default function IncidentFeed({ incidents = [], onAddIncident }) {
     </section>
   );
 }
+
+IncidentFeed.propTypes = {
+  incidents: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      summary: PropTypes.string,
+      text: PropTypes.string,
+      priority: PropTypes.string.isRequired,
+      category: PropTypes.string.isRequired,
+      zone: PropTypes.string,
+    })
+  ).isRequired,
+  onAddIncident: PropTypes.func.isRequired,
+};

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { Send, Bot, User, Sparkles, MessageCircle, Loader } from 'lucide-react';
 import { askGenie } from '../../services/gemini';
 
@@ -538,3 +539,16 @@ export default function AIChatbot({ gates }) {
     </div>
   );
 }
+
+AIChatbot.propTypes = {
+  gates: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      zone: PropTypes.string.isRequired,
+      occupancy: PropTypes.number.isRequired,
+      status: PropTypes.string.isRequired,
+      color: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};

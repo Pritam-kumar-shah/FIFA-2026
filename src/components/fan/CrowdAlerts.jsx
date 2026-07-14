@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { AlertTriangle, CheckCircle, XCircle, RefreshCw, Shield, TrendingUp, Users } from 'lucide-react';
 import { generateCrowdAlert } from '../../services/gemini';
 
@@ -654,3 +655,16 @@ export default function CrowdAlerts({ gates }) {
     </section>
   );
 }
+
+CrowdAlerts.propTypes = {
+  gates: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      zone: PropTypes.string.isRequired,
+      occupancy: PropTypes.number.isRequired,
+      status: PropTypes.string.isRequired,
+      color: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};

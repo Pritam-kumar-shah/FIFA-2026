@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { Users, Activity, AlertTriangle, CheckCircle } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
@@ -499,3 +500,16 @@ export default function StadiumHeatmap({ gates = [] }) {
     </section>
   );
 }
+
+StadiumHeatmap.propTypes = {
+  gates: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      zone: PropTypes.string.isRequired,
+      occupancy: PropTypes.number.isRequired,
+      status: PropTypes.string.isRequired,
+      color: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+};

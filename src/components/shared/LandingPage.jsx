@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { Trophy, Users, LayoutDashboard, Zap, Shield, Globe, ArrowRight } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
@@ -525,3 +526,8 @@ export default function LandingPage({ onFanClick, onOpsClick }) {
     </div>
   );
 }
+
+LandingPage.propTypes = {
+  onFanClick: PropTypes.func.isRequired,
+  onOpsClick: PropTypes.func.isRequired,
+};

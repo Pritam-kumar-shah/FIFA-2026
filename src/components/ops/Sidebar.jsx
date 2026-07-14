@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Zap,
   LayoutDashboard,
@@ -323,3 +324,14 @@ export default function Sidebar({ active = 'overview', setActive, stats = {} }) 
     </aside>
   );
 }
+
+Sidebar.propTypes = {
+  activePanel: PropTypes.string.isRequired,
+  onPanelChange: PropTypes.func.isRequired,
+  onBack: PropTypes.func.isRequired,
+  stats: PropTypes.shape({
+    totalFans: PropTypes.number.isRequired,
+    criticalGates: PropTypes.number.isRequired,
+    openIncidents: PropTypes.number.isRequired,
+  }).isRequired,
+};
